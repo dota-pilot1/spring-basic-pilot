@@ -1,0 +1,24 @@
+[스프링 부트 베이직 파일럿 프로젝트 - 진행 기록]
+
+1단계: 개발 환경 및 인프라 구축
+- compose.yaml 설정: PostgreSQL 컨테이너 설정 및 자동 포트 할당 적용
+- application.yml 설정: 서버 포트(9090), MyBatis, DB 초기화 설정 적용
+- schema.sql 작성: users 테이블 생성 및 테스트 계정 데이터(admin, user) 삽입
+
+2단계: 계정 시스템 구현 (MyBatis + Security)
+- 도메인 모델 생성: User 클래스(Lombok 활용)
+- 데이터 액세스 구현: UserMapper 인터페이스 및 XML 작성
+- 보안 서비스 구현: UserDetailsServiceImpl을 통한 DB 연단 로그인 로직 연동
+- 보안 설정: SecurityConfig를 통한 폼 로그인 및 접근 권한 제어
+
+3단계: 서비스 검증 및 실습 환경 구축
+- HomeController 생성: 로그인 후 사용자 정보 확인용 페이지 구현
+- HelloController 생성 (첫 실습): 로그인 없이 접근 가능한 공용 API 구현 (/api/**)
+- 프로젝트 빌드 및 실행 확인: Gradle을 이용한 실행 환경 검증 완성
+
+[테스트 주소 및 계정]
+- 메인 페이지: http://localhost:9090/
+- Hello API (Text): http://localhost:9090/api/hello
+- Greet API (JSON): http://localhost:9090/api/greet?name=hyun
+- 로그인 계정 (관리자): admin / admin123
+- 로그인 계정 (사용자): user / user123

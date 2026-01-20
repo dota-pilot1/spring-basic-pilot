@@ -1,0 +1,26 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: spring-basic-pilot
+
+  # Docker Compose integration will handle the datasource if compose.yaml is present.
+  # But we can still specify some settings if needed.
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.hyunseok.spring_basic_pilot.domain
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.hyunseok.spring_basic_pilot.mapper: DEBUG
+    org.springframework.security: DEBUG
