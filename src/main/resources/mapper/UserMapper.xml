@@ -2,8 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hyunseok.spring_basic_pilot.mapper.UserMapper">
     <select id="findByUsername" resultType="com.hyunseok.spring_basic_pilot.domain.User">
-        SELECT id, username, password, role, created_at
-        FROM users
-        WHERE username = #{username}
+        SELECT * FROM users WHERE username = #{username}
     </select>
+
+    <select id="findByEmail" resultType="com.hyunseok.spring_basic_pilot.domain.User">
+        SELECT * FROM users WHERE email = #{email}
+    </select>
+
+    <select id="findAll" resultType="com.hyunseok.spring_basic_pilot.domain.User">
+        SELECT * FROM users ORDER BY id ASC
+    </select>
+
+    <insert id="insert" parameterType="com.hyunseok.spring_basic_pilot.domain.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (username, password, email, role)
+        VALUES (#{username}, #{password}, #{email}, #{role})
+    </insert>
+
 </mapper>

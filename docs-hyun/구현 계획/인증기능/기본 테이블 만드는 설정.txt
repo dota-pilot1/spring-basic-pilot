@@ -1,0 +1,29 @@
+[기본 테이블 생성 및 초기화 설정 가이드]
+
+Spring Boot 어플리케이션이 실행될 때 `schema.sql`을 통해 테이블을 자동으로 생성하고 초기 데이터를 넣는 과정에서의 설정 및 트러블슈팅 가이드입니다.
+
+1. 자동 실행 설정 (`application.yml`)
+- `spring.sql.init.mode: always`: 프로젝트 시작 시 `schema.sql`을 항상 실행하도록 설정합니다.
+- `schema.sql` 내용: `CREATE TABLE IF NOT EXISTS` 문법을 사용하여 테이블이 없을 때만 생성하도록 작성합니다.
+
+2. [핵심] 테이블 구조 변경 시 트러블슈팅
+- 상황: 기존 테이블에 새 컬럼(예: 이메일)을 추가했는데, 어플리케이션 실행 시 "column does not exist" 에러가 발생하는 경우.
+- 원인: `CREATE TABLE IF NOT EXISTS`는 이미 테이블이 있으면 구조를 업데이트하지 않고 그냥 지나칩니다. 이후에 나오는 `INSERT` 문은 새 컬럼을 사용하려 하지만, 실제 DB 테이블에는 해당 컬럼이 없어서 에러가 납니다.
+
+3. 가장 깔끔한 해결 방법 (Clean Reset)
+새로운 컬럼이 반영되도록 DB를 초기화하는 순서입니다.
+
+1) [DBeaver] 기존 테이블 완전 삭제
+   ```sql
+   DROP TABLE IF EXISTS boards;
+   DROP TABLE IF EXISTS users;
+   ```
+   - 주의: 참조 관계(Foreign Key)가 있는 `boards`를 먼저 지워야 합니다.
+
+2) [Spring Boot] 어플리케이션 재시작
+   - 이전 실행을 종료(`Ctrl + C`)하고 다시 `./gradlew bootRun` 실행.
+   - 이때 스프링이 `schema.sql`을 처음부터 읽으며 `email` 컬럼이 포함된 새로운 테이블을 생성합니다.
+
+4. 요약
+구조가 바뀔 때는 **'기존 테이블 삭제 -> 재시작'**이 가장 확실하고 빠른 방법입니다. 
+(실무 운영 환경에서는 `Liquibase`나 `Flyway` 같은 DB 마이그레이션 도구를 사용하여 이 과정을 자동화합니다.)

@@ -1,0 +1,21 @@
+[회원 가입 구현 상세 계획 (Modern Update)]
+
+기존의 단순 '아이디' 방식에서 '이메일'을 필수로 포함하는 현대적인 가입 방식으로 고도화합니다.
+
+1. DB 레이어 처리 (MyBatis)
+- `users` 테이블에 `email` 컬럼 추가 (UNIQUE 제약 조건 필수)
+- `UserMapper.java`: `findByEmail(String email)` 메서드 추가 (중복 체크용)
+- `UserMapper.xml`: `INSERT INTO users (username, password, email, role) ...` 쿼리 수정
+
+2. 비즈니스 로직 및 컨트롤러 (Spring)
+- `UserService.java`: 
+  * 이메일 형식 유효성 검사 추가.
+  * 아이디 중복 체크 + 이메일 중복 체크 로직 강화.
+- `UserController.java`: `@RequestBody`에 이메일 정보 포함.
+
+3. 보안 및 연동 (Spring Security)
+- 로그인 시 아이디 혹은 이메일 중 어느 것을 ID로 쓸지 결정 (현재는 아이디 유지, 정보에 이메일 추가).
+
+4. 동작 확인 (DBeaver & Postman)
+- 가입 시 이메일이 정확히 저장되는지 확인.
+- 중복된 이메일로 가입 시도 시 에러 발생 확인.

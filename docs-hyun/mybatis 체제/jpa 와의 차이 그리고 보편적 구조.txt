@@ -1,0 +1,33 @@
+[MyBatis vs JPA 차이점 및 보편적 구조]
+
+1. MyBatis와 JPA의 핵심 차이점
+
+| 비교 항목 | MyBatis (SQL Mapper) | JPA (ORM) |
+| :-- | :-- | :-- |
+| 접근 방식 | SQL 중심. 개발자가 직접 쿼리 작성 | 객체 중심. 프레임워크가 SQL 생성 |
+| 개발 유연성 | SQL의 세밀한 제어 가능 (복잡한 쿼리에 유리) | DB 추상화로 특정 DB 종속성 낮음 |
+| 생산성 | 반복적인 CRUD 쿼리를 직접 작성해야 함 | 기본 CRUD 자동 제공으로 생산성 높음 |
+| 유지보수 | 스키마 변경 시 쿼리와 DTO 모두 수정 필요 | 객체 모델 수정으로 영속 계층 관리 가능 |
+| 지향점 | SQL 최적화 및 복잡한 통계성 업무 | 객체지향적 설계 및 도메인 모델 중심 개발 |
+
+2. MyBatis 체제의 보편적인 계층 구조 (Layered Architecture)
+
+전통적인 SI 및 대다수 MyBatis 프로젝트에서 사용하는 4계층 구조입니다.
+
+(1) Web Layer (Presentation)
+- 구성: Controller, JSP/Thymeleaf/Vue/React
+- 역할: 클라이언트의 요청을 받고 응답을 반환. 입증 값 검증 및 뷰 매핑.
+
+(2) Service Layer (Business)
+- 구성: Service(인터페이스), ServiceImpl(구현체)
+- 역할: 비즈니스 로직 처리. 트랜잭션(@Transactional)의 경계가 되는 지점.
+- 특징: MyBatis 환경에서는 도메인 객체에 로직이 없으므로(Anemic), 이 계층이 매우 무거워지는 경향이 있음.
+
+(3) Repository/Data Access Layer (Persistence)
+- 구성: Mapper 인터페이스, Mapper XML
+- 역할: DB 물리적 저장소에 접근. SQL 실행 및 결과를 DTO로 매핑.
+
+(4) Domain Layer (Model)
+- 구성: DTO(Data Transfer Object), VO(Value Object) 또는 Entity
+- 역할: 계층 간 데이터를 전달하는 바구니 역할.
+- 특징: 주로 Setter와 Getter만 있는 데이터 전달용 객체로 사용됨.

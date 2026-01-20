@@ -1,0 +1,62 @@
+[MyBatis 기반 유저 게시판 기본 구조]
+
+일반적인 SI 프로젝트에서 MyBatis를 사용하여 게시판(Board) 기능을 구현할 때의 표준적인 패키지 및 클래스 구성 예시입니다.
+
+1. 패키지 및 클래스 구조
+
+com.hyunseok.spring_basic_pilot
+├── controller
+│   └── BoardController.java         # HTTP 요청 처리 및 뷰 반환
+├── service
+│   ├── BoardService.java            # 비즈니스 로직 인터페이스
+│   └── BoardServiceImpl.java        # 비즈니스 로직 구현 (트랜잭션 처리)
+├── mapper
+│   └── BoardMapper.java             # MyBatis 매퍼 인터페이스
+├── domain (또는 model/dto)
+│   ├── Board.java                   # 게시판 엔티티/DTO (데이터 바구니)
+│   └── BoardSearchCondition.java    # 검색 조건용 객체
+└── security (기존 구성)
+
+src/main/resources
+├── mapper
+│   └── BoardMapper.xml              # 실제 SQL 쿼리 (SELECT, INSERT, UPDATE, DELETE)
+└── templates (비즈니스 요구에 따라)
+    └── board
+        ├── list.html                # 게시글 목록 화면
+        ├── detail.html              # 상세 보기 화면
+        └── write.html               # 등록/수정 화면
+
+2. 주요 클래스별 역할 (게시판 예시)
+
+(1) Board (Domain)
+- 게시글 번호(id), 제목(title), 내용(content), 작성자(author), 작성일(createdAt), 조회수(hit) 등의 필드 정의.
+
+(2) BoardMapper (Persistence)
+- @Mapper 어노테이션 사용.
+- List<Board> selectBoardList(BoardSearchCondition condition);
+- Board selectBoardById(Long id);
+- void insertBoard(Board board);
+- void updateBoard(Board board);
+- void deleteBoard(Long id);
+- void updateHit(Long id);
+
+(3) BoardService (Business)
+- 단순히 CRUD 매퍼를 호출하는 것 이상의 작업을 처리.
+- 예: 게시글 상세 조회 시 조회수 증가 로직을 함께 실행 (`updateHit` + `selectBoardById`).
+- 예: 게시글 삭제 시 관련 첨부파일 정보도 함께 삭제 처리.
+
+(4) BoardController (Web)
+- /board/list, /board/view/{id}, /board/write 등 URL 매핑.
+- 사용자 입력값(vaildation) 체크 및 서비스 호출 결과 전달.
+
+---
+
+[부록: MyBatis SQL 위치 (XML vs Annotation)]
+
+1. 매퍼 XML 파일 (가장 일반적)
+- 위치: src/main/resources/mapper/*.xml
+- 특징: 쿼리가 길고 복잡해도 관리가 쉽고, SI 프로젝트의 "진짜 주인공"입니다.
+
+2. 매퍼 인터페이스의 어노테이션 (간단한 경우)
+- 위치: Mapper.java 인터페이스 내부 (@Select, @Insert 등)
+- 특징: 간단한 CRUD에는 편하지만, 복잡한 동적 쿼리에는 코드가 지저분해져 잘 안 씁니다.

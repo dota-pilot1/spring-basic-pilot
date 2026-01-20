@@ -11,11 +11,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Board {
     private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private String role;
+    private String title;
+    private String content;
+    private Long authorId;
+    private String authorName; // JOIN을 통해 채울 필드
+    private Integer hit;
     private LocalDateTime createdAt;
 }
