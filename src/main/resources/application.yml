@@ -24,3 +24,4 @@ logging:
   level:
     com.hyunseok.spring_basic_pilot.mapper: DEBUG
     org.springframework.security: DEBUG
+    org.springdoc: DEBUG
