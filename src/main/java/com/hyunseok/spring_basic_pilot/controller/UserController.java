@@ -14,16 +14,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
-    public String signup(@RequestBody User user) {
-        try {
-            String username = userService.signup(user);
-            return "Signup successful for user: " + username;
-        } catch (RuntimeException e) {
-            return "Error: " + e.getMessage();
-        }
-    }
-
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAll();

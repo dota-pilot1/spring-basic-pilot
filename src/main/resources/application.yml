@@ -20,6 +20,10 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+jwt:
+  secret: eW91ci1zZWNyZXQta2V5LW11c3QtYmUtYXQtbGVhc3QtMjU2LWJpdHMtbG9uZy1mb3Itc2VjdXJpdHktcHVycG9zZXMtY2hhbmdlLXRoaXMtaW4tcHJvZHVjdGlvbg==
+  expiration: 3600000  # 1시간 (밀리초)
+
 logging:
   level:
     com.hyunseok.spring_basic_pilot.mapper: DEBUG
