@@ -26,7 +26,7 @@ public class User {
     private String password;
     
     @Schema(description = "권한", example = "ROLE_USER")
-    private String role;
+    private UserRole role;
     
     @Schema(hidden = true)
     private LocalDateTime createdAt;

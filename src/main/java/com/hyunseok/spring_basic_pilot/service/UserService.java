@@ -1,6 +1,7 @@
 package com.hyunseok.spring_basic_pilot.service;
 
 import com.hyunseok.spring_basic_pilot.domain.User;
+import com.hyunseok.spring_basic_pilot.domain.UserRole;
 import com.hyunseok.spring_basic_pilot.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,8 +39,8 @@ public class UserService {
         }
 
         // 기본 역할 설정
-        if (user.getRole() == null || user.getRole().isEmpty()) {
-            user.setRole("ROLE_USER");
+        if (user.getRole() == null) {
+            user.setRole(UserRole.ROLE_USER);
         }
 
         userMapper.insert(user);
