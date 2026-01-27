@@ -28,4 +28,8 @@
         VALUES (#{username}, #{password}, #{email}, #{role})
     </insert>
 
+    <delete id="deleteById">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
 </mapper>

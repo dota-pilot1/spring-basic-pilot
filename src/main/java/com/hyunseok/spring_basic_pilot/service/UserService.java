@@ -4,10 +4,12 @@ import com.hyunseok.spring_basic_pilot.domain.User;
 import com.hyunseok.spring_basic_pilot.domain.UserRole;
 import com.hyunseok.spring_basic_pilot.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +17,7 @@ import java.util.List;
 public class UserService {
 
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public String signup(User user) {
@@ -33,10 +36,14 @@ public class UserService {
             throw new RuntimeException("Email already exists!");
         }
 
-        // 비밀번호에 {noop} 접두사 추가
-        if (!user.getPassword().startsWith("{noop}")) {
-            user.setPassword("{noop}" + user.getPassword());
-        }
+        // [기존 방식] 비밀번호에 {noop} 접두사 추가 (평문 저장)
+        // if (!user.getPassword().startsWith("{noop}")) {
+        //     user.setPassword("{noop}" + user.getPassword());
+        // }
+
+        // [변경] 비밀번호 BCrypt 암호화
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
 
         // 기본 역할 설정
         if (user.getRole() == null) {
@@ -49,5 +56,9 @@ public class UserService {
 
     public List<User> findAll() {
         return userMapper.findAll();
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userMapper.findByEmail(email);
     }
 }

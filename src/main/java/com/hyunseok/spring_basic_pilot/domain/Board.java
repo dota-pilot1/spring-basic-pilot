@@ -1,5 +1,6 @@
 package com.hyunseok.spring_basic_pilot.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board {
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "자동 생성되는 ID")
     private Long id;
     private String title;
     private String content;

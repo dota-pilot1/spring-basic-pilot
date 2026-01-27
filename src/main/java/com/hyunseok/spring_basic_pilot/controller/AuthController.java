@@ -23,14 +23,17 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
         try {
             String username = userService.signup(user);
-            return "Signup successful for user: " + username;
+            return ResponseEntity.ok().body(new SignupResponse("success", "회원가입 성공: " + username));
         } catch (RuntimeException e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(new SignupResponse("error", e.getMessage()));
         }
     }
+
+    // 내부 클래스: 회원가입 응답
+    record SignupResponse(String status, String message) {}
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -45,10 +48,18 @@ public class AuthController {
         // 2. 인증 성공 시 SecurityContext에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 3. JWT 토큰 생성 (email을 subject로 사용)
-        String jwt = jwtTokenProvider.generateToken(loginRequest.getEmail());
+        // 3. 사용자 정보 조회 (role 포함)
+        User user = userService.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 4. 토큰 리턴
-        return ResponseEntity.ok(LoginResponse.of(jwt, loginRequest.getEmail()));
+        // 4. JWT 토큰 생성 (ROLE_ 접두사 제거)
+        String roleWithoutPrefix = user.getRole().name().replace("ROLE_", "");
+        String jwt = jwtTokenProvider.generateToken(
+                loginRequest.getEmail(),
+                roleWithoutPrefix
+        );
+
+        // 5. 토큰 + role 리턴
+        return ResponseEntity.ok(LoginResponse.of(jwt, loginRequest.getEmail(), roleWithoutPrefix));
     }
 }

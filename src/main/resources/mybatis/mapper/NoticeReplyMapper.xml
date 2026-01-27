@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hyunseok.spring_basic_pilot.mapper.NoticeReplyMapper">
+
+    <!-- findByNoticeId: 특정 공지사항의 답변 조회 -->
+    <select id="findByNoticeId" resultType="com.hyunseok.spring_basic_pilot.domain.NoticeReply">
+        SELECT id, notice_id, author_id, content, created_at, updated_at
+        FROM notice_replies
+        WHERE notice_id = #{noticeId}
+        ORDER BY created_at ASC
+    </select>
+
+    <!-- findById: ID로 답변 조회 -->
+    <select id="findById" resultType="com.hyunseok.spring_basic_pilot.domain.NoticeReply">
+        SELECT id, notice_id, author_id, content, created_at, updated_at
+        FROM notice_replies
+        WHERE id = #{id}
+    </select>
+
+    <!-- insert: 답변 생성 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notice_replies (notice_id, author_id, content)
+        VALUES (#{noticeId}, #{authorId}, #{content})
+    </insert>
+
+    <!-- update: 답변 수정 -->
+    <update id="update">
+        UPDATE notice_replies
+        SET content = #{content},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- delete: 답변 삭제 -->
+    <delete id="delete">
+        DELETE FROM notice_replies WHERE id = #{id}
+    </delete>
+
+</mapper>

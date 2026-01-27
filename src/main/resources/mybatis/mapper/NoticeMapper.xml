@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hyunseok.spring_basic_pilot.mapper.NoticeMapper">
+
+    <!-- findAll: 전체 공지사항 조회 (고정 공지 우선, 최신순) -->
+    <select id="findAll" resultType="com.hyunseok.spring_basic_pilot.domain.Notice">
+        SELECT id, title, content, author_id, is_pinned, view_count, created_at, updated_at
+        FROM notices
+        ORDER BY is_pinned DESC, created_at DESC
+    </select>
+
+    <!-- findById: ID로 공지사항 조회 -->
+    <select id="findById" resultType="com.hyunseok.spring_basic_pilot.domain.Notice">
+        SELECT id, title, content, author_id, is_pinned, view_count, created_at, updated_at
+        FROM notices
+        WHERE id = #{id}
+    </select>
+
+    <!-- insert: 공지사항 생성 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notices (title, content, author_id, is_pinned)
+        VALUES (#{title}, #{content}, #{authorId}, #{isPinned})
+    </insert>
+
+    <!-- update: 공지사항 수정 -->
+    <update id="update">
+        UPDATE notices
+        SET title = #{title},
+            content = #{content},
+            is_pinned = #{isPinned},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- delete: 공지사항 삭제 -->
+    <delete id="delete">
+        DELETE FROM notices WHERE id = #{id}
+    </delete>
+
+    <!-- incrementViewCount: 조회수 증가 -->
+    <update id="incrementViewCount">
+        UPDATE notices
+        SET view_count = view_count + 1
+        WHERE id = #{id}
+    </update>
+
+</mapper>
